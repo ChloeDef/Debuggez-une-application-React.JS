@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import { fr } from "date-fns/locale"; // npm install date-fns
-import { format } from "date-fns"; // npm install date-fns
 import { useData } from "../../contexts/DataContext";
-// import { getMonth } from "../../helpers/Date";
+import { getMonth } from "../../helpers/Date";
 
 import "./style.scss";
 
@@ -14,15 +12,17 @@ const Slider = () => {
   .reverse();
 
   const nextCard = () => {
-    setTimeout(
-      () => setIndex(index < byDateDesc.length -1 ? index + 1 : 0),
-      5000
+      setIndex((prevIndex) =>
+        prevIndex < byDateDesc.length -1 ? prevIndex +1 : 0
     );
   };
 
   useEffect(() => {
-    nextCard();
-  });
+    const intervalId = setInterval(nextCard, 5000);
+
+    return () => clearInterval(intervalId);
+    }, [index, byDateDesc]);
+
 
   return (
     <div className="SlideCardList">
@@ -38,9 +38,7 @@ const Slider = () => {
               <div className="SlideCard__description">
                 <h3>{event.title}</h3>
                 <p>{event.description}</p>
-                                <div>
-                  {format(new Date(event.date), "MMMM", { locale: fr })}
-                </div>
+                <div>{getMonth(new Date(event.date))}</div>
               </div>
             </div>
           </div>
